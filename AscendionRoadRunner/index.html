@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RoadRunner | Leadership Surface Movement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --watermark-opacity: 0.12;
+      --watermark-brightness: 1.3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #000000;
+      color: #ffffff;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* On mobile, body becomes scrollable (main-content is not fixed) */
+    @media (max-width: 768px) {
+      body { overflow-y: auto; }
+    }
+
+    /* VIEW MODAL FIELDS */
+    .view-field {
+      background: rgba(0,0,0,0.3);
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(16,185,129,0.1);
+    }
+    .view-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .view-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.92);
+    }
+
+    /* ============================================================
+       GLOBAL BACKGROUND LOGO WATERMARK (ASCENDION A)
+       ============================================================ */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+     
+      width: 700px;
+      height: 700px;
+     
+      background-image: url("ss.png");
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+     
+      opacity: var(--watermark-opacity);
+      pointer-events: none;
+      z-index: 0;
+     
+      filter: brightness(var(--watermark-brightness)) grayscale(100%);
+      transition: opacity 0.6s ease, filter 0.6s ease;
+    }
+
+    /* HEADER BAR - FIXED - PROPER HEIGHT */
+    .header-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 18px 40px;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+      min-height: 85px;
+    }
+
+    .header-bar::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        rgba(16, 185, 129, 0.6) 30%,
+        rgba(16, 185, 129, 0.6) 70%,
+        transparent
+      );
+    }
+
+    .nav-left {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      position: relative;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      color: #10B981;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.6);
+      transform: translateX(-3px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .logo {
+      width: 180px;
+      height: auto;
+      filter: none;
+      flex-shrink: 0;
+    }
+
+    .nav-center {
+      flex: 1;
+      text-align: center;
+    }
+
+    .title-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      line-height: 1;
+      color: #10B981;
+      white-space: nowrap;
+    }
+
+    .add-trip-btn {
+      padding: 8px 18px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10B981, #059669);
+      border: none;
+      font-weight: 800;
+      cursor: pointer;
+      color: #001b20;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .add-trip-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    }
+
+    /* SUMMARY BAR - PROPERLY SPACED */
+    .summary-bar {
+      position: fixed;
+      top: 100px;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      gap: 100px;
+      padding: 22px 40px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+    }
+
+    .summary-bar > div {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: capitalize;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-bar span {
+      font-size: 24px;
+      font-weight: 800;
+      color: #10B981;
+      margin-left: 12px;
+    }
+
+    /* MAIN CONTENT LAYOUT - PROPERLY POSITIONED */
+    .main-content {
+      position: fixed;
+      top: 180px;
+      left: 30px;
+      right: 30px;
+      bottom: 30px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      z-index: 1;
+    }
+
+    /* LEFT SIDEBAR - SCROLLABLE CARDS */
+    .trips-sidebar {
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 8px;
+    }
+
+    /* Custom scrollbar for cards */
+    .trips-sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .trips-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(16, 185, 129, 0.4);
+      border-radius: 6px;
+    }
+
+    .trips-sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #10B981;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.6));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cards-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* RIGHT SIDE - FIXED MAP */
+    .map-area {
+      position: relative;
+    }
+
+    #map-container {
+      height: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      box-shadow: 0 20px 60px rgba(16, 185, 129, 0.15);
+    }
+
+    #trips-map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* TRIP CARD - COMPACT SCALED DOWN */
+    .trip-card {
+      position: relative;
+      background: rgba(15, 23, 42, 0.6);
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      border-radius: 14px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    .trip-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(16, 185, 129, 0.6);
+      box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+    }
+
+    .trip-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .trip-callsign {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #10B981;
+      letter-spacing: 0.5px;
+    }
+
+    .trip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      color: #10B981;
+    }
+
+    .trip-badge.ended {
+      background: rgba(100, 100, 100, 0.2);
+      border-color: rgba(150, 150, 150, 0.5);
+      color: #999;
+    }
+
+    .badge-pulse {
+      width: 4px;
+      height: 4px;
+      background: #10B981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .trip-leader {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #10B981;
+      margin-bottom: 14px;
+    }
+
+    .route-display {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .time-display {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 14px;
+    }
+
+    .trip-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .trip-info-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 7px;
+      border-radius: 8px;
+      border: 1px solid rgba(16, 185, 129, 0.1);
+    }
+
+    .trip-info-label {
+      font-size: 8px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .trip-info-value {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .trip-link-box {
+      margin-top: 12px;
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      font-size: 9px;
+      color: #10B981;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .link-icon {
+      font-size: 12px;
+    }
+
+    .link-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trip-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .trip-actions button {
+      flex: 1;
+      padding: 7px;
+      border-radius: 8px;
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      font-size: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .trip-actions button:hover {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.6);
+      transform: translateY(-1px);
+    }
+
+    /* ACTION BUTTONS - SCALED DOWN */
+    .action-buttons {
+      position: fixed;
+      bottom: 28px;
+      right: 40px;
+      display: flex;
+      gap: 14px;
+      z-index: 1001;
+    }
+
+    .action-btn {
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10B981, #059669);
+      border: none;
+      color: #001b20;
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    }
+
+    /* DATABASE MODAL */
+    .database-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      padding: 20px;
+    }
+
+    .database-modal.active {
+      display: flex;
+    }
+
+    .database-box {
+      width: 95%;
+      max-width: 1400px;
+      max-height: 90vh;
+      background: linear-gradient(180deg, #0f1f1c, #0b0f0e);
+      border-radius: 20px;
+      padding: 32px;
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .database-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .database-header h2 {
+      color: #10B981;
+      font-family: 'Inter', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .db-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .export-btn {
+      padding: 10px 24px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2f8cff, #3ba9ff);
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .export-btn:hover {
+      opacity: 0.9;
+    }
+
+    .close-db-btn {
+      padding: 10px 24px;
+      border-radius: 10px;
+      background: rgba(31, 42, 39, 0.8);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: #eaeaea;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-db-btn:hover {
+      background: rgba(31, 42, 39, 1);
+    }
+
+    .database-table-wrapper {
+      flex: 1;
+      overflow: auto;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .database-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #fff;
+    }
+
+    .database-table th {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10B981;
+      padding: 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .database-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+      font-size: 13px;
+    }
+
+    .database-table tr:hover {
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .status-badge-table {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10B981;
+    }
+
+    .status-ended {
+      background: rgba(100, 100, 100, 0.2);
+      color: #999;
+    }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: linear-gradient(180deg, #0f1f1c, #0b0f0e);
+      border-radius: 20px;
+      padding: 36px;
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Modal scrollbar styling */
+    .modal-box::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .modal-box::-webkit-scrollbar-thumb {
+      background: rgba(16, 185, 129, 0.4);
+      border-radius: 6px;
+    }
+
+    .modal-box::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .modal-box h2 {
+      margin: 0 0 28px;
+      color: #10B981;
+      font-family: 'Inter', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    .form-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(16, 185, 129, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-icon {
+      font-size: 16px;
+    }
+
+    .modal-box label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 6px;
+      text-transform: capitalize;
+    }
+
+    .modal-box input,
+    .modal-box select {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: rgba(11, 15, 14, 0.8);
+      color: #eaeaea;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .modal-box input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .modal-box input:focus,
+    .modal-box select:focus {
+      border-color: rgba(16, 185, 129, 0.6);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .modal-box input[type="date"],
+    .modal-box input[type="time"] {
+      color-scheme: dark;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: #b8c6c1;
+      padding: 12px;
+      background: rgba(16, 185, 129, 0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .modal-actions button {
+      padding: 14px 32px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: #001b20;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(31, 42, 39, 0.8);
+      color: #eaeaea;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(31, 42, 39, 1);
+    }
+
+    /* ANIMATIONS */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+      }
+    }
+
+    .trip-call-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10B981;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .trip-call-btn:hover {
+      background: rgba(16, 185, 129, 0.3);
+      border-color: #10B981;
+      transform: scale(1.1);
+    }
+
+    /* LARGE LAPTOP (<=1200px) */
+    @media (max-width: 1200px) {
+      .main-content {
+        grid-template-columns: 300px 1fr;
+      }
+    }
+
+    /* TABLET (<=1024px) */
+    @media (max-width: 1024px) {
+      .header-bar {
+        padding: 14px 24px;
+        min-height: 70px;
+        gap: 16px;
+      }
+      .logo { width: 140px; }
+      .title-text { font-size: 20px; }
+
+      .summary-bar {
+        top: 84px;
+        gap: 30px;
+        padding: 14px 24px;
+        flex-wrap: wrap;
+      }
+      .summary-bar > div { font-size: 13px; }
+      .summary-bar span { font-size: 20px; margin-left: 8px; }
+
+      .main-content {
+        top: 155px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        grid-template-columns: 280px 1fr;
+        gap: 14px;
+      }
+
+      .action-buttons { right: 24px; bottom: 20px; }
+    }
+
+    /* MOBILE LARGE (<=768px) — stack layout */
+    @media (max-width: 768px) {
+      /* HEADER */
+      .header-bar {
+        padding: 10px 16px;
+        min-height: unset;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .nav-left { gap: 12px; }
+      .logo { width: 110px; }
+      .title-text { font-size: 16px; white-space: normal; text-align: center; }
+      .add-trip-btn { font-size: 10px; padding: 7px 14px; }
+
+      /* SUMMARY BAR */
+      .summary-bar {
+        top: auto;
+        position: relative;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 16px;
+        justify-content: space-around;
+      }
+      .summary-bar > div { font-size: 12px; }
+      .summary-bar span { font-size: 18px; margin-left: 6px; }
+
+      /* MAIN CONTENT — switch from fixed to normal flow */
+      .main-content {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 12px 14px;
+        gap: 14px;
+        min-height: calc(100vh - 200px);
+      }
+
+      /* CARDS SIDEBAR */
+      .trips-sidebar {
+        overflow-y: visible;
+        padding-right: 0;
+      }
+
+      /* MAP */
+      .map-area { height: 280px; }
+      #map-container { height: 100%; border-radius: 14px; }
+      #trips-map { height: 100%; }
+
+      /* TRIP CARDS */
+      .trip-card { padding: 14px; border-radius: 12px; }
+      .trip-callsign { font-size: 17px; }
+      .route-display { font-size: 12px; }
+      .time-display { font-size: 10px; }
+      .trip-info-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .trip-info-value { font-size: 10px; }
+      .trip-actions button { font-size: 7px; padding: 6px 4px; }
+
+      /* MODAL */
+      .modal-box {
+        width: 95%;
+        max-height: 92vh;
+        padding: 22px 18px;
+        border-radius: 16px;
+      }
+      .modal-box h2 { font-size: 22px; margin-bottom: 18px; }
+      .modal-box input,
+      .modal-box select { padding: 11px 13px; font-size: 13px; }
+      .modal-actions { flex-direction: column; gap: 8px; }
+      .modal-actions button { width: 100%; padding: 12px; font-size: 12px; }
+
+      /* DATABASE MODAL */
+      .database-box { padding: 18px; border-radius: 14px; }
+      .database-header h2 { font-size: 20px; }
+      .database-header { flex-wrap: wrap; gap: 10px; }
+      .db-actions { flex-wrap: wrap; gap: 8px; }
+      .export-btn, .close-db-btn { padding: 8px 16px; font-size: 12px; }
+
+      /* ACTION BUTTONS */
+      .action-buttons {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        padding: 0 14px 16px;
+        justify-content: flex-end;
+      }
+      .action-btn { padding: 10px 18px; font-size: 10px; }
+    }
+
+    /* MOBILE SMALL (<=480px) */
+    @media (max-width: 480px) {
+      .title-text { font-size: 13px; }
+      .logo { width: 90px; }
+      .back-btn { width: 34px; height: 34px; }
+      .trip-info-grid { grid-template-columns: 1fr; }
+      .summary-bar { gap: 6px; }
+      .summary-bar > div { font-size: 11px; }
+      .map-area { height: 220px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header-bar">
+  <div class="nav-left">
+    <a href="https://main-page-ruby.vercel.app/" class="back-btn" title="Back to Command Center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </a>
+    <img src="./ascendion-logo.png" class="logo">
+  </div>
+  
+  <div class="nav-center">
+    <div class="title-text">ROAD RUNNER — Executive Surface Movement</div>
+  </div>
+
+  <button id="add-trip-btn" class="add-trip-btn">+ ADD TRIP</button>
+</header>
+
+<!-- SUMMARY BAR -->
+<div class="summary-bar">
+  <div>Total Trips: <span id="sum-total">0</span></div>
+  <div>Active: <span id="sum-active">0</span></div>
+  <div>Ended: <span id="sum-ended">0</span></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+  <!-- LEFT SIDEBAR - SCROLLABLE CARDS -->
+  <div class="trips-sidebar">
+    <div class="section-header">
+      <div class="section-label">GROUND OPERATIONS</div>
+      <h2 class="section-title">Leadership Ground Ops</h2>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div style="margin-bottom:14px;position:relative;">
+      <input id="trip-search" type="text" placeholder="🔍  Search by cab no., leader, driver, route..." style="
+        width:100%;
+        padding:10px 14px 10px 36px;
+        border-radius:10px;
+        border:1px solid rgba(16,185,129,0.3);
+        background:rgba(11,15,14,0.8);
+        color:#eaeaea;
+        font-size:12px;
+        font-family:'Inter',sans-serif;
+        outline:none;
+        transition:border-color 0.2s;
+      " oninput="filterCards(this.value)" onfocus="this.style.borderColor='rgba(16,185,129,0.7)'" onblur="this.style.borderColor='rgba(16,185,129,0.3)'">
+    </div>
+
+    <div id="cards" class="cards-area"></div>
+  </div>
+
+  <!-- RIGHT SIDE - FIXED MAP -->
+  <div class="map-area">
+    <div id="map-container">
+      <div id="trips-map"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="action-buttons">
+  <button id="database-btn" class="action-btn">
+    <span></span>
+    <span>DATABASE</span>
+  </button>
+</div>
+
+<!-- DATABASE MODAL -->
+<div id="database-modal" class="database-modal">
+  <div class="database-box">
+    <div class="database-header">
+      <h2>
+        <span></span>
+        <span>Trip Database</span>
+      </h2>
+      <div class="db-actions">
+        <button id="export-csv-btn" class="export-btn">Export CSV</button>
+        <button id="close-db-btn" class="close-db-btn">Close</button>
+      </div>
+    </div>
+    <div class="database-table-wrapper">
+      <table class="database-table" id="database-table">
+        <thead>
+          <tr>
+            <th>Trip ID</th>
+            <th>Coordinator</th>
+            <th>Emp Code</th>
+            <th>Leader</th>
+            <th>Driver</th>
+            <th>Driver Mobile</th>
+            <th>Cab Number</th>
+            <th>Date</th>
+            <th>Pickup</th>
+            <th>Time</th>
+            <th>Drop</th>
+            <th>Disposal</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="database-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TRIP MODAL -->
+<div id="trip-modal" class="modal">
+  <div class="modal-box">
+    <h2>Add Ground Trip</h2>
+
+    <!-- COORDINATOR INFO -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="form-icon"></span>
+        Coordinator Information
+      </div>
+      <label>Coordinator Name</label>
+      <input id="coordinatorName" type="text" placeholder="Enter coordinator name" required>
+      
+      <label>Employee Code</label>
+      <input id="coordinatorCode" type="text" placeholder="Enter employee code" required>
+    </div>
+
+    <!-- TRIP DETAILS -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="form-icon"></span>
+        Leadership Details
+      </div>
+      <label>Leader Name</label>
+      <input id="leaderEl" type="text" placeholder="Enter leader name" required>
+      
+      <label>Date of Travel</label>
+      <input id="dateEl" type="date" required>
+    </div>
+
+    <!-- DRIVER & VEHICLE -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="form-icon"></span>
+        Driver & Vehicle
+      </div>
+      <label>Driver Name</label>
+      <input id="driverEl" type="text" placeholder="Enter driver name" required>
+      
+      <label>Driver Mobile Number</label>
+      <input id="driverMobileEl" type="tel" placeholder="Enter driver mobile number (e.g. +91XXXXXXXXXX)" required>
+      
+      <label>Cab Registration Number</label>
+      <input id="cabEl" type="text" placeholder="Enter cab number" required>
+    </div>
+
+    <!-- ROUTE INFO -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="form-icon"></span>
+        Route Information
+      </div>
+      <label>Pickup Location</label>
+      <input id="pickupEl" type="text" placeholder="Enter pickup location" required>
+      
+      <label>Pickup Time (Timezone: Asia/Calcutta)</label>
+      <input id="timeEl" type="time" required>
+      
+      <label>Drop Location</label>
+      <input id="dropEl" type="text" placeholder="Enter drop location" required>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="atDisp">
+      <label for="atDisp">At Disposal (Cab stays available)</label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="cancel-btn">Cancel</button>
+      <button class="btn-primary" id="save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW TRIP MODAL -->
+<div id="view-modal" class="modal">
+  <div class="modal-box">
+    <h2>Trip Details</h2>
+    <div id="view-content"></div>
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="btn-secondary" id="close-view-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("close-view-btn").addEventListener("click", () => {
+    document.getElementById("view-modal").classList.remove("active");
+  });
+  document.getElementById("view-modal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("view-modal"))
+      document.getElementById("view-modal").classList.remove("active");
+  });
+
+  function filterCards(query) {
+    const q = query.toLowerCase().trim();
+    document.querySelectorAll(".trip-card").forEach(card => {
+      const searchData = card.getAttribute("data-search") || "";
+      card.style.display = (!q || searchData.includes(q)) ? "" : "none";
+    });
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5SoIE5jWTC-bu2jdUX68Rrc87pICFmYI&libraries=geometry" async></script>
+<script type="module" src="./js/viewer.js"></script>
+
+</body>
+</html>
+
